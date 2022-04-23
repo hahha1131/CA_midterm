@@ -112,7 +112,7 @@ ___
 ___
 ## 실행 결과
 
-<https://postfiles.pstatic.net/MjAyMjA0MjNfMjAw/MDAxNjUwNzEyNTYwMzA5.PX48pXucLOBoToHGkyY1JyFmrdCkVcqFJHOfBBviAGEg.l9PCcuqO967DuqKGWY5VYINoD3edArGYGc0jFRhy5Dsg.PNG.jinha081131/%EC%97%90%EB%93%9C%EB%AA%AC%EB%93%9C_%EC%B9%B4%ED%94%84_%EC%86%8C%EC%8A%A4%EC%BD%94%EB%93%9C_%EA%B2%B0%EA%B3%BC.PNG?type=w966>
+![SrcCd](https://postfiles.pstatic.net/MjAyMjA0MjNfMjAw/MDAxNjUwNzEyNTYwMzA5.PX48pXucLOBoToHGkyY1JyFmrdCkVcqFJHOfBBviAGEg.l9PCcuqO967DuqKGWY5VYINoD3edArGYGc0jFRhy5Dsg.PNG.jinha081131/%EC%97%90%EB%93%9C%EB%AA%AC%EB%93%9C_%EC%B9%B4%ED%94%84_%EC%86%8C%EC%8A%A4%EC%BD%94%EB%93%9C_%EA%B2%B0%EA%B3%BC.PNG?type=w966)
 
 * 위의 사진은 소스코드의 실행결과이다.
 * 정점 4개를 만들고 간선을 5개 만들어준다 (중앙에 용량이 1인 간선을 만들어서 결과 비교를 위해 포드 풀커슨 알고리즘에도 적용한다)
