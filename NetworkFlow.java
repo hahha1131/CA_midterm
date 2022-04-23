@@ -81,6 +81,6 @@ public class edmonds_karp {
             totalFlow += minimumFlow;   // 전체 유량을 최소 유량으로 설정한다
         }
 
-        System.out.println("전체 유량은 " + totalFlow + "이다.");  // 전체 유량 출력
+        System.out.println("전체 유량은 " + totalFlow + "이다.");  // 전체 유량을 출력
     }
 }
