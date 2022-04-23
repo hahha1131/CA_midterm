@@ -1,64 +1,86 @@
-package Ford_Fulkerson;
+package NetworkFlow;
 
-/*
-   이번에 JAVA 를 이용하면서 알게된 것, import 문에서
-   java.~~~.*을 입력하면 패키지 전체를 불러온다
- */
+import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
-import java.lang.*;
-import java.util.LinkedList;    // 연결리스트 관련 패키지 임포트
-import java.util.Arrays;    // 배열 관련 패키지 임포트
-import java.util.Queue; // 큐 관련 패키지 임포트
+public class edmonds_karp {
+    public static int INF = Integer.MAX_VALUE;
 
-public class NetworkFlow {
-    static int INF = Integer.MAX_VALUE; // 무한대에 가까운 정수 INF 설정
-    static int V;   // 정점의 갯수 V
-    static int[][] Capacity = new int[V][V];    // 간선의 용량 배열
-    static int[][] Flow = new int[V][V];    // 간선의 유량 배열
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
 
-    int flowFunc(int src, int sink) {
-        for (int i = 0; i < V; i++) {   // 유량 배열 초기화
-            Arrays.fill(Flow[i], 0);
+        System.out.print("정점의 갯수 입력: \n");
+        int V = sc.nextInt();
+        System.out.print("간선의 갯수 입력: \n");
+        int E = sc.nextInt();
+        System.out.print("시작점 입력: \n");
+        int src = sc.nextInt();
+        System.out.print("도착점 입력: \n");
+        int sink = sc.nextInt();
+
+        int[][] Flow = new int[V + 1][V + 1];   // 유량 배열
+        int[][] Capacity = new int[V + 1][V + 1];   // 용량 배열
+        boolean[][] adj = new boolean[V + 1][V + 1];    // 인접한 정점 사이의 간선
+
+        for(int e = 0; e < E; ++e){
+            System.out.print("첫번째 정점 입력: ");
+            int a = sc.nextInt();   // 정점 시작
+            System.out.print("두번째 정점 입력: ");
+            int b = sc.nextInt();   // 정점 도착
+            System.out.print("두 정점 사이의 용량 입력: ");
+            int c = sc.nextInt();   // 두 정점 사이의 용량
+            Capacity[a][b] = c;
+            System.out.print("\n" + a + "와 " + b + "사이 간선의 용량은 " + c + "이다.\n");
+            adj[a][b] = adj[b][a] = true;   // 두 정점은 인접한 상태이다
+            System.out.print(a + "와 " + b + "가 연결되었습니다.\n\n");
         }
 
-        int totalFlow = 0;  // 전체 유량 초기화
+        Queue<Integer> q = new LinkedList<Integer>();   // Queue 형식의 연결리스트
+        int totalFlow = 0;  // 전체 유량
 
-        while (true) {  // 더는 경로를 찾을 수 없을 때까지 반복(BFS)
-            int[] parent = new int[V];  // BFS 실행을 위한 Queue 에 활용되는 parent 배열
-            Arrays.fill(parent, 0); // parent 배열 초기화
-            Queue<Integer> q = new LinkedList<Integer>();   // q에 인접리스트 적용
+        // bfs 시작
+        while(true){
+            int[] back = new int[V + 1];    // 이전 지점
 
-            parent[src] = src;  // parent 배열의 src 인덱스에는 src 입력
-            q.add(src); // Queue 에 src 추가
+            q.clear();  // Queue 비우기
+            q.add(src); // Queue에 추가
+            back[src] = src;    // 시작점의 이전 지점은 시작점 자신이다
 
-            while (!q.isEmpty() && parent[sink] == -1) {    // Queue 가 비어있는 상태가 아니고, 도착점에 도달할 때까지 반복
-                int now = q.poll(); // poll 이란 Queue 내에서 데이터를 하나 뽑아오는 명령어, now 에다가 Queue 에 저장된 데이터를 넣어준다
+            while(!q.isEmpty()){    // Queue가 비어있지 않을 동안
+                int present = q.poll(); // 현재 정점은 당장 Queue에서 뽑아오는 지점이다
 
-                for (int next = 0; next < V; ++next) {  // 다음 간선으로 넘어가는 정수 next 를 설정하고 정점의 갯수만큼 반복
-                    if (Capacity[now][next] - Flow[now][next] > 0 && parent[next] == -1) {  // 최대 용량에서 현재 흐름을 뺀 값이 0보다 크고 도착점이 아닐 때
-                        q.add(next);    // Queue 에 next 삽입
-                        parent[next] = next;    // parent 의 next 인덱스에 next 를 삽입
+                for(int next = 1; next <= V; ++next){   // 다음 지점이 1이고 V와 같을 때까지 다음지점을 올려간다
+                    if(!adj[present][next]) // 만약 현재와 다음 정점이 인접하지 않는다
+                        continue;   // 계속
+                    if(back[next] != 0) // 만약 다음 정점의 이전 지점이 0이 아니면
+                        continue;   // 계속
+                    if(Capacity[present][next] - Flow[present][next] > 0){  // 만약 현재와 다음 지점 사이의 용량에서 현재 유량을 뺀 값이 0보다 크면
+                        q.add(next);    // Queue에 다음 지점을 넣는다
+                        back[next] = present;   // 다음 지점의 이전 지점은 현재의 정점이다
+                        if(next == sink)    // 만약 다음 지점이 도착점이라면
+                            break;  // 멈춘다
                     }
                 }
             }
 
-            if (parent[sink] == -1) // 만약 도착점에 도달했으면,
-                break;  // break
+            if(back[sink] == 0) // 만약 도착점의 이전 지점이 0과 같다면
+                break;  // 멈춘다
 
-            int amount = INF;   // 양(amount)를 INF 로 초기화한다.
-            for (int p = sink; p != src; p = parent[p]) {   // 도착점 sink 에서 시작점 src 가 아닐 때까지, p 를 parent[p]로 설정하며 반복
-                amount = Math.min(Capacity[parent[p]][p] - Flow[parent[p]][p], amount); // amount 를 용량에서 유량을 뺀 값과 amount 중 최솟값으로 설정
+            int minimumFlow = INF;  // 최소 유량을 지정한다 (가장 큰 값으로)
+
+            for(int vertex = sink; back[vertex] != vertex; vertex = back[vertex]){  // 지점을 도착점으로 지정, 정점의 이전 지점이 현재의 정점이 아닐 때까지 현재의 정점을 정점의 이전 값으로 돌린다
+                minimumFlow = Math.min(minimumFlow, Capacity[back[vertex]][vertex] - Flow[back[vertex]][vertex]);   // 최소 유량과 이전 지점과 현재 지점의 용량에서 현재 지점의 유량을 뺀 값의 용량 중 작은 값을 최소 유량으로 정한다
             }
 
-            for (int p = sink; p != src; p = parent[p]) {   // 도착점에서 시작점으로 가면서
-                Flow[parent[p]][p] += amount;   // 정방향으로 간선을 지나면 +
-                Flow[p][parent[p]] -= amount;   // 역방향으로 간선을 지나면 -
+            for(int vertex = sink; back[vertex] != vertex; vertex = back[vertex]){  // 지점을 도착점으로 지정, 정점의 이전 지점이 현재의 정점이 아닐 때까지 현재의 정점을 정점의 이전 값으로 돌린다
+                Flow[back[vertex]][vertex] += minimumFlow;  //  이전 지점과 현 지점의 유량에 최소 유량을 더해준다
+                Flow[vertex][back[vertex]] -= minimumFlow;  //  현 지점과 이전 지점의 유량에 최소 유량을 빼준다
             }
 
-            totalFlow += amount; // 전체 용량은 위에서 계산하던 amount 가 된다.
+            totalFlow += minimumFlow;   // 전체 유량을 최소 유량으로 설정한다
         }
 
-        System.out.print(totalFlow); // 출력
-        return 0;
+        System.out.println("전체 유량은 " + totalFlow + "이다.");  // 전체 유량 출력
     }
 }
